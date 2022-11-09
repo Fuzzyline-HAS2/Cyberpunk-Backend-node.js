@@ -9,6 +9,7 @@ const port = process.env.PORT || 5000;//포트 5000 할당
 let device_list = ['itembox','generator','revivalmachine','escapemachine','temple','duct','tagmachine'];
 
 let cyberpunk_refresh_request = false; 
+let iotglove_refresh_request = false; 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -25,18 +26,17 @@ const connection = mysql.createConnection({
     database: 'has2'
 });
 
-//react에서 새로고침 요청
+//Cyberpunk - react에서 새로고침 요청
 app.get('/api/cyberpunk_refresh_request', (req,res) => {
     cyberpunk_refresh_request = true;
     res.end();
 });
-//php(esp)에서 새로고침 요청
+//Cyberpunk - php(esp)에서 새로고침 요청
 app.get('/api/cyberpunk_php_request', (req,res) => {
     cyberpunk_refresh_request = true;
     res.end();
 });
-
-//CYBERPUNK 테마의 장치 정보만 수집. - iotglove 제외 
+//Cyberpunk 테마의 장치 정보만 수집. - iotglove 제외 
 app.get('/api/DB_cyberpunk', (req,res) => {
     if(cyberpunk_refresh_request === false){
         res.end();
@@ -68,7 +68,7 @@ app.get('/api/DB_cyberpunk', (req,res) => {
                                     sql_device = 'SELECT * FROM cyberpunk_temple';
                                     connection.query(sql_device, (err_temple, rows_temple) => {
                                         if(err_temple)res.send('[/api/DB_cyberpunk temple] is not excuted. select fail...\n' + err_temple);
-                                    res.send({device : rows_device,duct : rows_duct,escapemachine : rows_escapemachine,generator : rows_generator,revivalmachine : rows_revivalmachine,itembox : rows_itembox,tagmachine : rows_tagmachine,temple : rows_temple});
+                                        res.send({device : rows_device,duct : rows_duct,escapemachine : rows_escapemachine,generator : rows_generator,revivalmachine : rows_revivalmachine,itembox : rows_itembox,tagmachine : rows_tagmachine,temple : rows_temple});
                                     });
                                 });
                             });
@@ -79,6 +79,36 @@ app.get('/api/DB_cyberpunk', (req,res) => {
         });
     }
 });
+
+//Iotglove - react에서 새로고침 요청
+app.get('/api/iotglove_refresh_request', (req,res) => {
+    iotglove_refresh_request = true;
+    res.end();
+});
+//Iotglove - php(esp)에서 새로고침 요청
+app.get('/api/iotglove_php_request', (req,res) => {
+    iotglove_refresh_request = true;
+    res.end();
+});
+//Iotglove 장치 정보만 수집.
+app.get('/api/DB_iotglove', (req,res) => {
+    if(iotglove_refresh_request === false){
+        res.end();
+    }
+    else{
+        iotglove_refresh_request = false;
+        console.log('DB_iotglove')
+        let sql_device = 'SELECT * FROM device where device_type = "iotglove"';
+        connection.query(sql_device, (err_device, rows_device) => {
+            if(err_device)res.send('[/api/DB_cyberpunk device] is not excuted. select fail...\n' + err_duct);
+            let sql_cyberpunk_iotglove = 'SELECT * FROM cyberpunk_iotglove';
+            connection.query(sql_cyberpunk_iotglove, (err_device, rows_cyberpunk) => {
+                if(err_device)res.send('[/api/DB_cyberpunk device] is not excuted. select fail...\n' + err_duct);
+                res.send({device : rows_device,cyberpunk : rows_cyberpunk});
+            })
+        })
+    }
+})
 app.post('/api/reset', (req,res) => {
     let sql_reset;
     let create_itembox = "CREATE TABLE `"+req.body.theme+"_itembox` ("
@@ -296,6 +326,113 @@ app.post('/api/update', (req,res) => {
     }
     res.end();
 });
+app.post('/api/update/dropdown', (req,res) => {
+    let sql_update;
+    cyberpunk_refresh_request = true;
+    
+    if(req.body.command.includes('game_state')){
+        switch(req.body.command.slice(11)){
+            case 'S':
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'stop' where device_name = '"+req.body.device_name+"'";
+                connection.query(sql_update, (err, rows) => {
+                    if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                });
+                break;
+            case 'R':
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'ready' where device_name = '"+req.body.device_name+"'";
+                connection.query(sql_update, (err, rows) => {
+                    if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                });
+                break;
+            case 'A':
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'activate' where device_name = '"+req.body.device_name+"'";
+                connection.query(sql_update, (err, rows) => {
+                    if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                });
+                break;
+        }
+    }
+    else if(req.body.command.includes('device_state')){ //아직 작성 안함. 
+        console.log(req.body.command.slice(13))
+        switch(req.body.command.slice(13)){
+            case 'S':
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'stop' where device_name = '"+req.body.device_name+"'";
+                connection.query(sql_update, (err, rows) => {
+                    if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                });
+                break;
+            case 'R':
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'ready' where device_name = '"+req.body.device_name+"'";
+                connection.query(sql_update, (err, rows) => {
+                    if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                });
+                break;
+            case 'A':
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'activate' where device_name = '"+req.body.device_name+"'";
+                connection.query(sql_update, (err, rows) => {
+                    if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                });
+                break;
+        }
+    }
+    res.end();
+});
+app.post('/api/timer', (req,res) => {
+    let sql_timer
+    switch(req.body.command){
+        case 'reset':
+            console.log('rest')
+            sql_timer = "UPDATE timer set sec = 2100 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+            });
+            sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+                console.log(rows)
+                res.send(rows)
+            });
+            break;
+        case 'start':
+            console.log('start')
+            sql_timer = "UPDATE timer set sec = sec - 1 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+            });
+            sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+                console.log(rows)
+                res.send(rows)
+            });
+            break;
+        case 'stop':
+            console.log('stop')
+            res.end();
+            break;
+        case 'reload':
+            sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+                console.log(rows)
+                res.send(rows)
+            });
+            break;
+        default :
+            sql_timer = "UPDATE timer set sec = sec + "+req.body.command+" where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            console.log(sql_timer)
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+            });
+            sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+                console.log(rows)
+                res.send(rows)
+            });
+            break;
+    }
+})
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
