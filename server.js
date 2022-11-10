@@ -155,7 +155,8 @@ app.post('/api/reset', (req,res) => {
                     + "`game_state` varchar(45)  NOT NULL,"
                     + "`device_state` varchar(45)  NOT NULL,"
                     + "`cool_time` int  NOT NULL,"
-                    + "`mode` varchar(45)  NOT NULL);";
+                    + "`light_mode` varchar(45)  NOT NULL,"
+                    + "`game_mode` varchar(45)  NOT NULL);";
     let create_tagmachine = "CREATE TABLE `"+req.body.theme+"_tagmachine` ("
                             + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
                             + "`device_type` varchar(45) NOT NULL,"
@@ -295,7 +296,21 @@ app.post('/api/update', (req,res) => {
                 });
             }
         }
-        sql_update = "UPDATE device set shift_machine = 2 where theme = '"+req.body.theme+"' and device_type not in('"+req.body.device+"')";
+        sql_update = "UPDATE device set shift_machine = 2 where theme = '"+req.body.theme+"' and device_type not in('iotglove')";
+        connection.query(sql_update, (err, rows) => {
+            if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+        });
+    }
+    else if(req.body.device === 'game_start'){
+        for(let i = 0; i < device_list.length ; i++){
+            if(device_list !== 'revivalmachine' || device_list !== 'escapemachine'){
+                sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'activate'"; 
+                connection.query(sql_update, (err, rows) => {
+                    if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                });
+            };
+        }
+        sql_update = "UPDATE device set shift_machine = 2 where theme = '"+req.body.theme+"' and device_type not in('escapemachine,revivalmachine')";
         connection.query(sql_update, (err, rows) => {
             if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
         });
@@ -325,6 +340,19 @@ app.post('/api/update', (req,res) => {
             });
     }
     res.end();
+});
+app.post('/api/check', (req,res) => {
+    let sql_check;
+    cyberpunk_refresh_request = true;
+    console.log(req.body)
+    if(req.body.device === 'all_except_iot'){
+        if(req.body.state === 'check'){
+            sql_check = "UPDATE device set shift_machine = 2 where theme = '"+req.body.theme+"' and device_type not in('iotglove')";
+            connection.query(sql_check, (err, rows) => {
+                if(err)res.send(sql_check + ' query is not excuted. select fail...\n' + err);
+            });
+        }
+    }
 });
 app.post('/api/update/dropdown', (req,res) => {
     let sql_update;
@@ -381,20 +409,30 @@ app.post('/api/timer', (req,res) => {
     let sql_timer
     switch(req.body.command){
         case 'reset':
-            console.log('rest')
-            sql_timer = "UPDATE timer set sec = 2100 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            // console.log('rest')
+            sql_timer = "UPDATE timer set sec = 2101 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
             });
             sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
-                console.log(rows)
+                // console.log(rows)
                 res.send(rows)
             });
             break;
+        case 'game_start':
+            sql_timer = "UPDATE timer set sec = 2101 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+            });
+            sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+                // console.log(rows)
+            });
         case 'start':
-            console.log('start')
+            // console.log('start')
             sql_timer = "UPDATE timer set sec = sec - 1 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
@@ -402,32 +440,32 @@ app.post('/api/timer', (req,res) => {
             sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
-                console.log(rows)
+                // console.log(rows)
                 res.send(rows)
             });
             break;
         case 'stop':
-            console.log('stop')
+            // console.log('stop')
             res.end();
             break;
         case 'reload':
             sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
-                console.log(rows)
+                // console.log(rows)
                 res.send(rows)
             });
             break;
         default :
             sql_timer = "UPDATE timer set sec = sec + "+req.body.command+" where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
-            console.log(sql_timer)
+            // console.log(sql_timer)
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
             });
             sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
-                console.log(rows)
+                // console.log(rows)
                 res.send(rows)
             });
             break;
