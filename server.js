@@ -118,7 +118,8 @@ app.post('/api/reset', (req,res) => {
                         + "`device_state` varchar(45)  NOT NULL,"
                         + "`battery_pack` int  NOT NULL,"
                         + "`exp_pack` int  NOT NULL,"
-                        + "`mode` varchar(45)  NOT NULL);";
+                        + "`light_mode` varchar(45)  NOT NULL,"
+                        + "`game_mode` varchar(45)  NOT NULL);";
     let create_generator =  "CREATE TABLE `"+req.body.theme+"_generator` ("
                             + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
                             + "`device_type` varchar(45) NOT NULL,"
@@ -126,7 +127,8 @@ app.post('/api/reset', (req,res) => {
                             + "`device_state` varchar(45)  NOT NULL,"
                             + "`battery_pack` int  NOT NULL,"
                             + "`max_battery_pack` int  NOT NULL,"
-                            + "`mode` varchar(45)  NOT NULL);";
+                            + "`light_mode` varchar(45)  NOT NULL,"
+                            + "`game_mode` varchar(45)  NOT NULL);";
     let create_revivalmachine = "CREATE TABLE `"+req.body.theme+"_revivalmachine` ("
                                 + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
                                 + "`device_type` varchar(45) NOT NULL,"
@@ -134,21 +136,24 @@ app.post('/api/reset', (req,res) => {
                                 + "`device_state` varchar(45)  NOT NULL,"
                                 + "`life_chip` int  NOT NULL,"
                                 + "`activate_num` int  NOT NULL,"
-                                + "`mode` varchar(45)  NOT NULL);";
+                                + "`light_mode` varchar(45)  NOT NULL,"
+                                + "`game_mode` varchar(45)  NOT NULL);";
     let create_escapemachine = "CREATE TABLE `"+req.body.theme+"_escapemachine` ("
                                 + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
                                 + "`device_type` varchar(45) NOT NULL,"
                                 + "`game_state` varchar(45)  NOT NULL,"
                                 + "`device_state` varchar(45)  NOT NULL,"
                                 + "`max_ghost_tag` int NOT NULL,"
-                                + "`mode` varchar(45)  NOT NULL);";
+                                + "`light_mode` varchar(45)  NOT NULL,"
+                                + "`game_mode` varchar(45)  NOT NULL);";
     let create_temple = "CREATE TABLE `"+req.body.theme+"_temple` ("
                         + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
                         + "`device_type` varchar(45) NOT NULL,"
                         + "`game_state` varchar(45)  NOT NULL,"
                         + "`device_state` varchar(45)  NOT NULL,"
                         + "`taken_chip` int NOT NULL,"
-                        + "`mode` varchar(45)  NOT NULL);"
+                        + "`light_mode` varchar(45)  NOT NULL,"
+                        + "`game_mode` varchar(45)  NOT NULL);";
     let create_duct = "CREATE TABLE `"+req.body.theme+"_duct` ("
                     + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
                     + "`device_type` varchar(45) NOT NULL,"
@@ -166,7 +171,8 @@ app.post('/api/reset', (req,res) => {
                             + "`player_unlock_time` int  NOT NULL,"
                             + "`tagger_unlock_time` int  NOT NULL,"
                             + "`ghost_open_time` int  NOT NULL,"
-                            + "`mode` varchar(45)  NOT NULL);";
+                            + "`light_mode` varchar(45)  NOT NULL,"
+                            + "`game_mode` varchar(45)  NOT NULL);";
 
     if(req.body.device === 'all_except_iot'){
         cyberpunk_refresh_request = true;
@@ -274,7 +280,7 @@ app.post('/api/update', (req,res) => {
     if(req.body.device === 'all_except_iot'){
         if(req.body.state === 'S'){
             for(let i = 0; i < device_list.length ; i++){
-                sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'stop'"; 
+                sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'stop', device_state = 'stop'"; 
                 connection.query(sql_update, (err, rows) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
@@ -282,7 +288,7 @@ app.post('/api/update', (req,res) => {
         }
         else if(req.body.state === 'R'){
             for(let i = 0; i < device_list.length ; i++){
-                sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'ready'"; 
+                sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'ready', device_state = 'ready'"; 
                 connection.query(sql_update, (err, rows) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
@@ -290,7 +296,7 @@ app.post('/api/update', (req,res) => {
         }
         else if(req.body.state === 'A'){
             for(let i = 0; i < device_list.length ; i++){
-                sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'activate'"; 
+                sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'activate', device_state = 'activate'"; 
                 connection.query(sql_update, (err, rows) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
@@ -302,13 +308,14 @@ app.post('/api/update', (req,res) => {
         });
     }
     else if(req.body.device === 'game_start'){
+        console.log("req.body.device === 'game_start' 대체 어디서 쓰는거야;;;;")
         for(let i = 0; i < device_list.length ; i++){
             if(device_list !== 'revivalmachine' || device_list !== 'escapemachine'){
                 sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'activate'"; 
                 connection.query(sql_update, (err, rows) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
-            };
+            }
         }
         sql_update = "UPDATE device set shift_machine = 2 where theme = '"+req.body.theme+"' and device_type not in('escapemachine,revivalmachine')";
         connection.query(sql_update, (err, rows) => {
@@ -317,19 +324,19 @@ app.post('/api/update', (req,res) => {
     }
     else {
             if(req.body.state === 'S'){
-                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'stop'"; 
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'stop', device_state = 'stop'"; 
                 connection.query(sql_update, (err, rows) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
             }
             else if(req.body.state === 'R'){
-                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'ready'"; 
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'ready', device_state = 'ready'"; 
                 connection.query(sql_update, (err, rows) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
             }
             else if(req.body.state === 'A'){
-                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'activate'"; 
+                sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set game_state = 'activate', device_state = 'activate'"; 
                 connection.query(sql_update, (err, rows) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
@@ -414,6 +421,11 @@ app.post('/api/timer', (req,res) => {
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
             });
+            sql_timer = "TRUNCATE "+req.body.theme+"_mp3"; 
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+                // console.log(rows)
+            });
             sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
@@ -422,6 +434,11 @@ app.post('/api/timer', (req,res) => {
             });
             break;
         case 'game_start':
+            cyberpunk_refresh_request = true;
+            sql_timer = "TRUNCATE "+req.body.theme+"_mp3";
+            connection.query(sql_timer, (err, rows) => {
+                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
+            });
             sql_timer = "UPDATE timer set sec = 2101 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
@@ -431,8 +448,16 @@ app.post('/api/timer', (req,res) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
                 // console.log(rows)
             });
+            for(let i = 0; i < device_list.length ; i++){
+                sql_timer = "UPDATE "+req.body.theme+"_"+device_list[i]+" set game_state = 'activate'"; 
+                console.log(sql_timer)
+                connection.query(sql_timer, (err, rows) => {
+                    if(err)res.send(sql_timer + ' query is not excuted. select fail...\n' + err);
+                });
+            }
         case 'start':
             // console.log('start')
+            //mp3 초기화 
             sql_timer = "UPDATE timer set sec = sec - 1 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
@@ -471,6 +496,48 @@ app.post('/api/timer', (req,res) => {
             break;
     }
 })
+//나래이션에 따라 업데이트 되는 디바이스 상태 api
+app.post('/api/update/device', (req,res) => {
+    let sql_update;
+    cyberpunk_refresh_request = true;
+    // console.log(req.body)
+    if(req.body.device_type !== 'revivalmachine'){
+        sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" SET device_state= '"+req.body.device_state+"'";
+        connection.query(sql_update, (err, rows) => {
+            if(err)res.send(sql_update+ ' query is not excuted. select fail...\n' + err);
+        }); 
+        sql_update = "UPDATE device SET shift_machine = shift_machine+1 WHERE device_type = '"+req.body.device_type+"'"; 
+        connection.query(sql_update, (err, rows) => {
+        if(err)res.send(sql_update+ ' query is not excuted. select fail...\n' + err);
+    });
+    }
+    else {
+        sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" SET device_state= '"+req.body.device_state+"' WHERE device_name = '"+req.body.device_name+"'";
+        connection.query(sql_update, (err, rows) => {
+            if(err)res.send(sql_update+ ' query is not excuted. select fail...\n' + err);
+        }); 
+        sql_update = "UPDATE device SET shift_machine = shift_machine+1 WHERE device_name = '"+req.body.device_name+"'"; 
+        connection.query(sql_update, (err, rows) => {
+        if(err)res.send(sql_update+ ' query is not excuted. select fail...\n' + err);
+        });
+    }
+    res.end();
+})
+app.post('/api/narration', (req,res) => {
+    let sql_narration;
+    // console.log(req.body)
+    // sql_narration = "UPDATE "+req.body.theme+"_"+req.body.device+" SET folder_num = "+req.body.folder_num+", file_num = "+req.body.file_num; 
+    sql_narration = "INSERT INTO "+req.body.theme+"_"+req.body.device+"(folder_num,file_num) VALUES("+req.body.folder_num+","+req.body.file_num+")"; 
+    connection.query(sql_narration, (err, rows) => {
+        if(err)res.send(sql_narration+ ' query is not excuted. select fail...\n' + err);
+    });
+    sql_narration = "UPDATE device SET shift_machine = shift_machine+1 WHERE device_name = '"+req.body.theme+"OS'"; 
+    connection.query(sql_narration, (err, rows) => {
+        if(err)res.send(sql_narration+ ' query is not excuted. select fail...\n' + err);
+    });
+    res.end();
+})
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
