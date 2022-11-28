@@ -83,99 +83,14 @@ app.get('/api/DB_cyberpunk', (req,res) => {
 
 app.post('/api/reset', (req,res) => {
     let sql_reset;
-    let create_itembox = "CREATE TABLE `"+req.body.theme+"_itembox` ("
-                        + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
-                        + "`device_type` varchar(45) NOT NULL,"
-                        + "`game_state` varchar(45)  NOT NULL,"
-                        + "`device_state` varchar(45)  NOT NULL,"
-                        + "`battery_pack` int  NOT NULL,"
-                        + "`exp_pack` int  NOT NULL,"
-                        + "`light_mode` varchar(45)  NOT NULL,"
-                        + "`game_mode` varchar(45)  NOT NULL);";
-    let create_generator =  "CREATE TABLE `"+req.body.theme+"_generator` ("
-                            + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
-                            + "`device_type` varchar(45) NOT NULL,"
-                            + "`game_state` varchar(45)  NOT NULL,"
-                            + "`device_state` varchar(45)  NOT NULL,"
-                            + "`battery_pack` int  NOT NULL,"
-                            + "`max_battery_pack` int  NOT NULL,"
-                            + "`light_mode` varchar(45)  NOT NULL,"
-                            + "`game_mode` varchar(45)  NOT NULL);";
-    let create_revivalmachine = "CREATE TABLE `"+req.body.theme+"_revivalmachine` ("
-                                + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
-                                + "`device_type` varchar(45) NOT NULL,"
-                                + "`game_state` varchar(45)  NOT NULL,"
-                                + "`device_state` varchar(45)  NOT NULL,"
-                                + "`life_chip` int  NOT NULL,"
-                                + "`activate_num` int  NOT NULL,"
-                                + "`light_mode` varchar(45)  NOT NULL,"
-                                + "`game_mode` varchar(45)  NOT NULL);";
-    let create_escapemachine = "CREATE TABLE `"+req.body.theme+"_escapemachine` ("
-                                + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
-                                + "`device_type` varchar(45) NOT NULL,"
-                                + "`game_state` varchar(45)  NOT NULL,"
-                                + "`device_state` varchar(45)  NOT NULL,"
-                                + "`max_ghost_tag` int NOT NULL,"
-                                + "`light_mode` varchar(45)  NOT NULL,"
-                                + "`game_mode` varchar(45)  NOT NULL);";
-    let create_temple = "CREATE TABLE `"+req.body.theme+"_temple` ("
-                        + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
-                        + "`device_type` varchar(45) NOT NULL,"
-                        + "`game_state` varchar(45)  NOT NULL,"
-                        + "`device_state` varchar(45)  NOT NULL,"
-                        + "`taken_chip` int NOT NULL,"
-                        + "`light_mode` varchar(45)  NOT NULL,"
-                        + "`game_mode` varchar(45)  NOT NULL);";
-    let create_duct = "CREATE TABLE `"+req.body.theme+"_duct` ("
-                    + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
-                    + "`device_type` varchar(45) NOT NULL,"
-                    + "`game_state` varchar(45)  NOT NULL,"
-                    + "`device_state` varchar(45)  NOT NULL,"
-                    + "`cool_time` int  NOT NULL,"
-                    + "`light_mode` varchar(45)  NOT NULL,"
-                    + "`game_mode` varchar(45)  NOT NULL);";
-    let create_tagmachine = "CREATE TABLE `"+req.body.theme+"_tagmachine` ("
-                            + "`device_name` varchar(45) NOT NULL PRIMARY KEY,"
-                            + "`device_type` varchar(45) NOT NULL,"
-                            + "`game_state` varchar(45)  NOT NULL,"
-                            + "`device_state` varchar(45)  NOT NULL,"
-                            + "`player_lock_time` int  NOT NULL,"
-                            + "`player_unlock_time` int  NOT NULL,"
-                            + "`tagger_unlock_time` int  NOT NULL,"
-                            + "`ghost_open_time` int  NOT NULL,"
-                            + "`light_mode` varchar(45)  NOT NULL,"
-                            + "`game_mode` varchar(45)  NOT NULL);";
-
     if(req.body.device === 'all_except_iot'){
         cyberpunk_refresh_request = true;
-        sql_reset = "DROP TABLE "+req.body.theme+"_itembox,"+req.body.theme+"_generator,"+req.body.theme+"_revivalmachine,"+req.body.theme+"_escapemachine,"+req.body.theme+"_temple,"+req.body.theme+"_duct,"+req.body.theme+"_tagmachine";
-        connection.query(sql_reset, (err, rows) => {
-            if(err)res.send(sql_reset + ' query is not excuted. select fail...\n' + err);
-        });
-        //각 테이블 생성 
-        connection.query(create_itembox, (err, rows) => {
-            if(err)res.send(create_itembox + ' query is not excuted. select fail...\n' + err);
-        });
-        connection.query(create_generator, (err, rows) => {
-            if(err)res.send(create_generator + ' query is not excuted. select fail...\n' + err);
-        });
-        connection.query(create_revivalmachine, (err, rows) => {
-            if(err)res.send(create_revivalmachine + ' query is not excuted. select fail...\n' + err);
-        });
-        connection.query(create_escapemachine, (err, rows) => {
-            if(err)res.send(create_escapemachine + ' query is not excuted. select fail...\n' + err);
-        });
-        connection.query(create_temple, (err, rows) => {
-            if(err)res.send(create_temple + ' query is not excuted. select fail...\n' + err);
-        });
-        connection.query(create_duct, (err, rows) => {
-            if(err)res.send(create_duct + ' query is not excuted. select fail...\n' + err);
-        });
-        connection.query(create_tagmachine, (err, rows) => {
-            if(err)res.send(create_tagmachine + ' query is not excuted. select fail...\n' + err);
-        });
-        //각 테이블 데이터 추가 
         for(let i = 0; i < device_list.length ; i++){
+            //테이블 내용 삭제 -> 데이터 추가 
+            sql_reset = "TRUNCATE "+req.body.theme+"_"+device_list[i];
+            connection.query(sql_reset, (err, rows) => {
+                if(err)res.send(sql_reset + ' query is not excuted. select fail...\n' + err);
+            });
             // sql_reset ="insert into cyberpunk_" +device_list[i]+ " select b.device_name,a.* from "+device_list[i]+" as a, device as b where a.device_type=b.device_type and b.theme = 'cyberpunk'"
             sql_reset = "insert into "+req.body.theme+"_"+device_list[i]+" select b.device_name,a.* from "+device_list[i]+" as a, device as b where a.device_type=b.device_type and b.theme = '"+req.body.theme+"'";
             connection.query(sql_reset, (err, rows) => {
@@ -190,49 +105,11 @@ app.post('/api/reset', (req,res) => {
     }
     else {
         cyberpunk_refresh_request = true;
-        //테이블 삭제 쿼리 
-        sql_reset = "DROP TABLE "+req.body.theme+"_"+req.body.device;
+        //테이블 내용 삭제 쿼리 
+        sql_reset = "TRUNCATE "+req.body.theme+"_"+req.body.device;
         connection.query(sql_reset, (err, rows) => {
             if(err)res.send(sql_reset + ' query is not excuted. select fail...\n' + err);
         });
-        //테이블 생성 쿼리 
-        switch (req.body.device){
-            case 'itembox':
-                connection.query(create_itembox, (err, rows) => {
-                    if(err)res.send(create_itembox + ' query is not excuted. select fail...\n' + err);
-                });
-                break;
-            case 'revivalmachine':
-                connection.query(create_revivalmachine, (err, rows) => {
-                    if(err)res.send(create_revivalmachine + ' query is not excuted. select fail...\n' + err);
-                });
-                break;
-            case 'tagmachine':
-                connection.query(create_tagmachine, (err, rows) => {
-                    if(err)res.send(create_tagmachine + ' query is not excuted. select fail...\n' + err);
-                });
-                break;
-            case 'duct':
-                connection.query(create_duct, (err, rows) => {
-                    if(err)res.send(create_duct + ' query is not excuted. select fail...\n' + err);
-                });
-                break;
-            case 'generator':
-                connection.query(create_generator, (err, rows) => {
-                    if(err)res.send(create_generator + ' query is not excuted. select fail...\n' + err);
-                });
-                break;
-            case 'escapemachine':
-                connection.query(create_escapemachine, (err, rows) => {
-                    if(err)res.send(create_escapemachine + ' query is not excuted. select fail...\n' + err);
-                });
-                break;
-            case 'temple':
-                connection.query(create_temple, (err, rows) => {
-                    if(err)res.send(create_temple + ' query is not excuted. select fail...\n' + err);
-                });
-                break;
-        }
         //테이블 작성 쿼리 
         sql_reset = "insert into "+req.body.theme+"_"+req.body.device+" select b.device_name,a.* from "+req.body.device+" as a, device as b where a.device_type=b.device_type and b.theme = '"+req.body.theme+"'";
         connection.query(sql_reset, (err, rows) => {
