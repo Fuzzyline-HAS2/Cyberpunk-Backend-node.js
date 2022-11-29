@@ -80,7 +80,6 @@ app.get('/api/DB_cyberpunk', (req,res) => {
     }
 });
 
-
 app.post('/api/reset', (req,res) => {
     let sql_reset;
     if(req.body.device === 'all_except_iot'){
@@ -125,7 +124,6 @@ app.post('/api/reset', (req,res) => {
 app.post('/api/update', (req,res) => {
     let sql_update;
     cyberpunk_refresh_request = true;
-
     if(req.body.device === 'all_except_iot'){
         if(req.body.state === 'S'){
             for(let i = 0; i < device_list.length ; i++){
@@ -167,6 +165,13 @@ app.post('/api/update', (req,res) => {
             }
         }
         sql_update = "UPDATE device set shift_machine = 2 where theme = '"+req.body.theme+"' and device_type not in('escapemachine,revivalmachine')";
+        connection.query(sql_update, (err, rows) => {
+            if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+        });
+    }
+    else if(req.body.device === 'revivalmachine'){
+        sql_update = "UPDATE "+req.body.theme+"_"+req.body.device+" set "+req.body.command+" = "+req.body.num+" WHERE device_name = '"+req.body.name+"'"; 
+        console.log(sql_update)
         connection.query(sql_update, (err, rows) => {
             if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
         });
