@@ -82,6 +82,7 @@ app.get('/api/DB_cyberpunk', (req,res) => {
 
 app.post('/api/reset', (req,res) => {
     let sql_reset;
+    console.log(req.body)
     if(req.body.device === 'all_except_iot'){
         cyberpunk_refresh_request = true;
         for(let i = 0; i < device_list.length ; i++){
@@ -100,6 +101,14 @@ app.post('/api/reset', (req,res) => {
         sql_reset = "UPDATE device set shift_machine = 1 where theme = '"+req.body.theme+"' and device_type not in('iotglove')";
         connection.query(sql_reset, (err, rows) => {
             if(err)res.send(sql_reset + ' query is not excuted. select fail...\n' + err);
+        });
+    }
+    else if(req.body.device === "mp3"){
+        sql_reset = "TRUNCATE "+req.body.theme+"_mp3"; 
+        console.log(sql_reset)
+        connection.query(sql_reset, (err, rows) => {
+            if(err)res.send(sql_reset+ ' query is not excuted. select fail...\n' + err);
+            // console.log(rows)
         });
     }
     else {
@@ -435,11 +444,6 @@ app.post('/api/timer', (req,res) => {
             sql_timer = "UPDATE timer set sec = 2101 where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
                 if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
-            });
-            sql_timer = "TRUNCATE "+req.body.theme+"_mp3"; 
-            connection.query(sql_timer, (err, rows) => {
-                if(err)res.send(sql_timer+ ' query is not excuted. select fail...\n' + err);
-                // console.log(rows)
             });
             sql_timer = "SELECT sec FROM timer where timer_name = '"+req.body.theme+"_"+req.body.timer_name+"'"; 
             connection.query(sql_timer, (err, rows) => {
