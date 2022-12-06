@@ -250,7 +250,7 @@ app.post('/api/check', (req,res) => {
 app.post('/api/update/dropdown', (req,res) => {
     let sql_update;
     cyberpunk_refresh_request = true;
-    
+    console.log(req.body)
     if(req.body.command.includes('game_state')){
         switch(req.body.command.slice(11)){
             case 'S':
@@ -298,7 +298,6 @@ app.post('/api/update/dropdown', (req,res) => {
         }
     }
     else if(req.body.command.includes('device_state')){
-        console.log(req.body)
         switch(req.body.command.slice(13)){
             case 'check':
                 if(req.body.device_name === 'ALL'){
@@ -316,13 +315,13 @@ app.post('/api/update/dropdown', (req,res) => {
                 break;
             case 'open':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'open'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'open'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'open' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'open' where device_name = '"+req.body.device_name+"'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
@@ -330,13 +329,13 @@ app.post('/api/update/dropdown', (req,res) => {
                 break;
             case 'used':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'used'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'used'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'used' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'used' where device_name = '"+req.body.device_name+"'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
@@ -344,13 +343,13 @@ app.post('/api/update/dropdown', (req,res) => {
                 break;
             case 'self_revive':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'self_revive'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'self_revive'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'self_revive' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'self_revive' where device_name = '"+req.body.device_name+"'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
@@ -358,13 +357,13 @@ app.post('/api/update/dropdown', (req,res) => {
                 break;
             case 'lock':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'lock'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'lock'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'lock' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'lock' where device_name = '"+req.body.device_name+"'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
@@ -372,13 +371,13 @@ app.post('/api/update/dropdown', (req,res) => {
                 break;
             case 'battery_max':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'battery_max'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'battery_max'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'battery_max' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'battery_max' where device_name = '"+req.body.device_name+"'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
@@ -386,13 +385,13 @@ app.post('/api/update/dropdown', (req,res) => {
                 break;
             case 'starter_finish':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'starter_finish'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'starter_finish'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'starter_finish' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'starter_finish' where device_name = '"+req.body.device_name+"'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
@@ -400,38 +399,38 @@ app.post('/api/update/dropdown', (req,res) => {
                 break;
             case 'repaired':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'repaired'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'repaired'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'repaired' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'repaired' where device_name = '"+req.body.device_name+"'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 break;
             case 'repaired_all':
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'repaired_all'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'repaired_all'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                     //탈출장치 활성화될때 아이템박스에도 발전기가 수리되었음을 device_state로 전송 (dropdown)
-                    sql_update = "UPDATE "+req.body.theme+"_itembox set game_state = 'activate', device_state = 'repaired_all'";
+                    sql_update = "UPDATE "+req.body.theme+"_itembox set device_state = 'repaired_all'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 break;
             case 'escape':
                 if(req.body.device_name === 'ALL'){
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'escape'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'escape'";
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                     });
                 }
                 else{
-                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set game_state = 'activate', device_state = 'escape' where device_name = '"+req.body.device_name+"'";
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set device_state = 'escape' where device_name = '"+req.body.device_name+"'";
                     console.log(sql_update)
                     connection.query(sql_update, (err, rows) => {
                         if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
