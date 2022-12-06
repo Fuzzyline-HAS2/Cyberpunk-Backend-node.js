@@ -858,6 +858,30 @@ app.post('/api/reset/iotglove',(req,res) => {
     }
     res.end();
 })
+
+app.post('/api/update/all',(req,res) => {
+    let sql_update;
+    console.log(req.body)
+    cyberpunk_refresh_request = true;
+    iotglove_refresh_request = true;
+    if(req.body.state === 'player_lose' || req.body.state === 'player_win'){
+        for(let i = 0; i < device_list.length ; i++){
+            sql_update = "UPDATE "+req.body.theme+"_"+device_list[i]+" set device_state = '"+req.body.state+"'"; 
+            connection.query(sql_update, (err, rows) => {
+                if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+            });
+        }
+        sql_update = "UPDATE iotglove_"+req.body.glove+" set device_state = '"+req.body.state+"'"; 
+        console.log(sql_update)
+        connection.query(sql_update, (err, rows) => {
+            if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+        });
+        sql_reset = "UPDATE device set shift_machine = 2 where theme = '"+req.body.theme+"'";
+        connection.query(sql_reset, (err, rows) => {
+            if(err)res.send(sql_reset + ' query is not excuted. select fail...\n' + err);
+        });
+    }
+})
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 //코딩 끝나면 해야할 일 -> 주석 검색해서 위치 찾기 
