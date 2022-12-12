@@ -106,7 +106,11 @@ app.post('/api/reset', (req,res) => {
     }
     else if(req.body.device === "mp3"){
         sql_reset = "TRUNCATE "+req.body.theme+"_mp3"; 
-        console.log(sql_reset)
+        connection.query(sql_reset, (err, rows) => {
+            if(err)res.send(sql_reset+ ' query is not excuted. select fail...\n' + err);
+            // console.log(rows)
+        });
+        sql_reset = "UPDATE device set watchdog = '1' where device_name = 'cyberpunkOS'"; 
         connection.query(sql_reset, (err, rows) => {
             if(err)res.send(sql_reset+ ' query is not excuted. select fail...\n' + err);
             // console.log(rows)
@@ -455,8 +459,139 @@ app.post('/api/update/dropdown', (req,res) => {
                     if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
                 });
                 break;
+        }    
+    }
+    else if(req.body.command.includes('manage_state')){
+        switch(req.body.command.slice(13)){
+            case 'ml': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'ml'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'ml' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'mo': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mo'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mo' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'mu': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mu'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mu' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'mbm': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mbm'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mbm' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'msf': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'msf'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'msf' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'mr': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mr'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mr' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'mra': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mra'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mra' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'me': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'me'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'me' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
+            case 'mtm': //manage_lock
+                if(req.body.device_name === 'ALL'){
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mtm'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                else{
+                    sql_update = "UPDATE "+req.body.theme+"_"+req.body.device_type+" set manage_state = 'mtm' where device_name = '"+req.body.device_name+"'";
+                    connection.query(sql_update, (err, rows) => {
+                        if(err)res.send(sql_update + ' query is not excuted. select fail...\n' + err);
+                    });
+                }
+                break;
         }
     }
+    //업데이트가 되어있어 shift_machine 변경해주는 부분
     if(req.body.device_name === 'ALL'){
         sql_update = "UPDATE device set shift_machine = 2 where device_type = '"+req.body.device_type+"'";
         connection.query(sql_update, (err, rows) => {
