@@ -1775,30 +1775,14 @@ app.post("/api/update/iotglove", (req, res) => {
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
 		console.log(sql_update);
-		//생존자 지정
-		for (let i = 0; i < req.body.player.length; i++) {
-			let player_name = i + 1;
-			sql_update =
-				"UPDATE iotglove_" +
-				req.body.group +
-				" SET role = 'player', player_name = '" +
-				player_name +
-				"' WHERE device_name = '" +
-				req.body.player[i] +
-				"'";
-			// console.log(sql_update)
-			connection.query(sql_update, (err, rows) => {
-				if (err)
-					res.send(
-						sql_update + " query is not excuted. select fail...\n" + err
-					);
-			});
-		}
-
-		//술래 지정
+		//술래만 한번 더 지정
 		sql_update =
 			"UPDATE iotglove_" + req.body.group + " SET role = 'tagger' WHERE ";
 		for (let i = 0; i < req.body.tagger.length; i++) {
+			//req.body.player 배열에서 술래 없애기
+			req.body.player.splice(req.body.player.indexOf(req.body.tagger[i]), 1);
+			console.log("req.body.player: ", req.body.player);
+
 			if (i === req.body.tagger.length - 1) {
 				sql_update += "device_name = '" + req.body.tagger[i] + "'";
 				break;
@@ -1810,6 +1794,27 @@ app.post("/api/update/iotglove", (req, res) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
+
+		//선택된 플레이어 생존자로 변경
+		for (let i = 0; i < req.body.player.length; i++) {
+			let player_name = i + 1;
+			sql_update =
+				"UPDATE iotglove_" +
+				req.body.group +
+				" SET role = 'player', player_name = '" +
+				player_name +
+				"' WHERE device_name = '" +
+				req.body.player[i] +
+				"' AND role NOT in ('tagger')";
+			// console.log(sql_update)
+			connection.query(sql_update, (err, rows) => {
+				if (err)
+					res.send(
+						sql_update + " query is not excuted. select fail...\n" + err
+					);
+			});
+		}
+
 		sql_update =
 			"UPDATE device SET shift_machine = 2 WHERE device_name like '" +
 			req.body.group +
