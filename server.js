@@ -901,6 +901,20 @@ app.post("/api/update/dropdown", (req, res) => {
 						);
 				});
 				break;
+			case "blink":
+				sql_update =
+					"UPDATE " +
+					req.body.theme +
+					"_" +
+					req.body.device_type +
+					" set game_state = 'activate', device_state = 'blink'";
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(
+							sql_update + " query is not excuted. select fail...\n" + err
+						);
+				});
+				break;
 		}
 	} else if (req.body.command.includes("manage_state")) {
 		switch (req.body.command.slice(13)) {
@@ -1408,7 +1422,8 @@ app.post("/api/update/device", (req, res) => {
 			req.body.device_type +
 			" SET game_state= '" +
 			req.body.device_state +
-			"'";
+			"', device_state= 'blink' ";
+		console.log(sql_update);
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
@@ -1775,7 +1790,7 @@ app.post("/api/update/iotglove", (req, res) => {
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
 		console.log(sql_update);
-		//술래만 한번 더 지정
+		//술래만 지정
 		sql_update =
 			"UPDATE iotglove_" + req.body.group + " SET role = 'tagger' WHERE ";
 		for (let i = 0; i < req.body.tagger.length; i++) {
