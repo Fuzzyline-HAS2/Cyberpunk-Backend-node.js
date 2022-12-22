@@ -3,9 +3,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
 
-const app = express();
+const app = express(); //서버에 필요한 기능인 미들웨어를 어플리케이션에 추가
 const port = process.env.PORT || 5000; //포트 5000 할당
 
+//장치 이름 list -> 모든 장치의 데이터를 변경할 때 사용되는 list
 let device_list = [
 	"itembox",
 	"generator",
@@ -16,16 +17,19 @@ let device_list = [
 	"tagmachine",
 ];
 
-let cyberpunk_refresh_request = false;
-let iotglove_refresh_request = false;
+let cyberpunk_refresh_request = false; //true일 때 cyberpunk 테마의 DB에서 웹으로 데이터 가져오기
+let iotglove_refresh_request = false; //true일 때 iotglove의 DB에서 웹으로 데이터 가져오기
 
+//미들웨어를 추가할 때는 use함수를 사용한다
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//test용
 app.get("/", (req, res) => {
 	res.send("hello node!");
 });
 
+//DB와 서버 연결을 위한 객체 생성
 const connection = mysql.createConnection({
 	host: "localhost",
 	user: "root",
