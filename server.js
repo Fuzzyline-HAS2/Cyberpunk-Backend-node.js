@@ -54,24 +54,24 @@ app.get("/api/DB_cyberpunk", (req, res) => {
 	if (cyberpunk_refresh_request === false) {
 		res.end();
 	} else {
-		//cyberpunk_refresh_request === true 일때만 데이터 전송.
+		//cyberpunk_refresh_request === true 일때만 데이터 전송.(react에서 새로고침 요청 or php 요청)
 		cyberpunk_refresh_request = false;
 		console.log("DB_cyberpunk");
-		let sql_device = 'SELECT * FROM device where theme = "cyberpunk"';
+		let sql_device = 'SELECT * FROM device where theme = "cyberpunk"'; //device table에서 테마가 cyberpunk인 장치들의 정보 요청 쿼리
 		connection.query(sql_device, (err_device, rows_device) => {
 			if (err_device)
 				res.send(
 					"[/api/DB_cyberpunk device] is not excuted. select fail...\n" +
 						err_duct
 				);
-			let sql_device = "SELECT * FROM cyberpunk_duct";
+			let sql_device = "SELECT * FROM cyberpunk_duct"; //cyberpunk_duct의 정보 요청 쿼리
 			connection.query(sql_device, (err_duct, rows_duct) => {
 				if (err_duct)
 					res.send(
 						"[/api/DB_cyberpunk duct] is not excuted. select fail...\n" +
 							err_duct
 					);
-				sql_device = "SELECT * FROM cyberpunk_escapemachine";
+				sql_device = "SELECT * FROM cyberpunk_escapemachine"; //cyberpunk_escapemachine의 정보 요청 쿼리
 				connection.query(
 					sql_device,
 					(err_escapemachine, rows_escapemachine) => {
@@ -80,14 +80,14 @@ app.get("/api/DB_cyberpunk", (req, res) => {
 								"[/api/DB_cyberpunk escapemachine] is not excuted. select fail...\n" +
 									err_escapemachine
 							);
-						sql_device = "SELECT * FROM cyberpunk_generator";
+						sql_device = "SELECT * FROM cyberpunk_generator"; //cyberpunk_generator의 정보 요청 쿼리
 						connection.query(sql_device, (err_generator, rows_generator) => {
 							if (err_generator)
 								res.send(
 									"[/api/DB_cyberpunk generator] is not excuted. select fail...\n" +
 										err_generator
 								);
-							sql_device = "SELECT * FROM cyberpunk_revivalmachine";
+							sql_device = "SELECT * FROM cyberpunk_revivalmachine"; //cyberpunk_revivalmachine의 정보 요청 쿼리
 							connection.query(
 								sql_device,
 								(err_revivalmachine, rows_revivalmachine) => {
@@ -96,14 +96,14 @@ app.get("/api/DB_cyberpunk", (req, res) => {
 											"[/api/DB_cyberpunk revivalmachine] is not excuted. select fail...\n" +
 												err_revivalmachine
 										);
-									sql_device = "SELECT * FROM cyberpunk_itembox";
+									sql_device = "SELECT * FROM cyberpunk_itembox"; //cyberpunk_itembox의 정보 요청 쿼리
 									connection.query(sql_device, (err_itembox, rows_itembox) => {
 										if (err_itembox)
 											res.send(
 												"[/api/DB_cyberpunk itembox] is not excuted. select fail...\n" +
 													err_itembox
 											);
-										sql_device = "SELECT * FROM cyberpunk_tagmachine";
+										sql_device = "SELECT * FROM cyberpunk_tagmachine"; //cyberpunk_tagmachine의 정보 요청 쿼리
 										connection.query(
 											sql_device,
 											(err_tagmachine, rows_tagmachine) => {
@@ -112,7 +112,7 @@ app.get("/api/DB_cyberpunk", (req, res) => {
 														"[/api/DB_cyberpunk tagmachine] is not excuted. select fail...\n" +
 															err_tagmachine
 													);
-												sql_device = "SELECT * FROM cyberpunk_temple";
+												sql_device = "SELECT * FROM cyberpunk_temple"; //cyberpunk_temple의 정보 요청 쿼리
 												connection.query(
 													sql_device,
 													(err_temple, rows_temple) => {
@@ -1687,14 +1687,27 @@ app.post("/api/update/iotglove", (req, res) => {
 				req.body.state === "ready" ||
 				req.body.state === "activate"
 			) {
-				sql_update =
-					"UPDATE iotglove_" +
-					req.body.group +
-					" SET game_state = '" +
-					req.body.state +
-					"' ,device_state = '" +
-					req.body.state +
-					"'";
+				if (req.body.state === "activate") {
+					sql_update =
+						"UPDATE iotglove_" +
+						req.body.group +
+						" SET game_state = '" +
+						req.body.state +
+						"' ,device_state = '" +
+						req.body.state +
+						"' ,tagger_name = '" +
+						req.body.tagger +
+						"'";
+				} else {
+					sql_update =
+						"UPDATE iotglove_" +
+						req.body.group +
+						" SET game_state = '" +
+						req.body.state +
+						"' ,device_state = '" +
+						req.body.state +
+						"'";
+				}
 				connection.query(sql_update, (err, rows) => {
 					if (err)
 						res.send(
