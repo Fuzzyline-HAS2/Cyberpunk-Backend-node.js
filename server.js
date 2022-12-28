@@ -122,6 +122,7 @@ app.get("/api/DB_cyberpunk", (req, res) => {
 																	err_temple
 															);
 														res.send({
+															//cyberpunk 테마의 모든 장치 정보를 react로 전송
 															device: rows_device,
 															duct: rows_duct,
 															escapemachine: rows_escapemachine,
@@ -145,7 +146,6 @@ app.get("/api/DB_cyberpunk", (req, res) => {
 		});
 	}
 });
-
 app.post("/api/reset", (req, res) => {
 	let sql_reset;
 	console.log(req.body);
