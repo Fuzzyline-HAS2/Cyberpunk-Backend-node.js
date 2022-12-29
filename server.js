@@ -174,9 +174,8 @@ app.post("/api/reset", (req, res) => {
 					res.send(sql_reset + " query is not excuted. select fail...\n" + err);
 			});
 		}
-		//shift_machine = 2로 변경해야함.
 		sql_reset =
-			"UPDATE device set shift_machine = 1 where theme = '" +
+			"UPDATE device set shift_machine = 2 where theme = '" +
 			req.body.theme +
 			"' and device_type not in('iotglove')";
 		connection.query(sql_reset, (err, rows) => {
@@ -1967,10 +1966,9 @@ app.post("/api/reset/iotglove", (req, res) => {
 					res.send(sql_reset + " query is not excuted. select fail...\n" + err);
 			});
 			sql_reset =
-				"UPDATE device SET shift_machine = 1, theme = 'waiting' WHERE device_name like '" +
+				"UPDATE device SET shift_machine = 2, theme = 'waiting' WHERE device_name like '" +
 				req.body.group +
 				"%'";
-			//shift_mahcine +1로 변경하기
 			// sql_reset = "UPDATE device SET shift_machine = shift_machine+1 WHERE device_name like '"+req.body.group+"%'";
 			connection.query(sql_reset, (err, rows) => {
 				if (err)
@@ -2025,7 +2023,3 @@ app.post("/api/update/all", (req, res) => {
 	}
 });
 app.listen(port, () => console.log(`Listening on port ${port}`));
-
-//코딩 끝나면 해야할 일 -> 주석 검색해서 위치 찾기
-//shift_machine = 2로 변경해야함.
-//shift_mahcine +1로 변경하기
