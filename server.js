@@ -459,6 +459,15 @@ app.post("/api/check", (req, res) => {
 					res.send(sql_check + " query is not excuted. select fail...\n" + err);
 			});
 		}
+	} else if (req.body.device === "iotglove") {
+		sql_check =
+			"UPDATE device set shift_machine = 2 where device_name Like '" +
+			req.body.group +
+			"%'";
+		connection.query(sql_check, (err, rows) => {
+			if (err)
+				res.send(sql_check + " query is not excuted. select fail...\n" + err);
+		});
 	}
 	res.end();
 });
