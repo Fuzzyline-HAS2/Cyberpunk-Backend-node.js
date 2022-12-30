@@ -406,9 +406,7 @@ app.post("/api/update", (req, res) => {
 		}
 	} else if (req.body.device === "generator") {
 		//수리 필요한 발전기 개수 나타내는 부분
-		console.log("발전기 수리하자고 ㅡㅡ");
 		if (req.body.command === "left_generator") {
-			console.log("발전기 수리완료라고 ㅜㅜ");
 			sql_update =
 				"UPDATE " +
 				req.body.theme +
@@ -452,7 +450,7 @@ app.post("/api/check", (req, res) => {
 			sql_check =
 				"UPDATE device set shift_machine = 2 where theme = '" +
 				req.body.theme +
-				"' and device_type not in('iotglove')";
+				"' and device_type not in('iotglove','mp3')";
 			connection.query(sql_check, (err, rows) => {
 				if (err)
 					res.send(sql_check + " query is not excuted. select fail...\n" + err);
@@ -1489,9 +1487,13 @@ app.post("/api/update/device", (req, res) => {
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
 		sql_update =
-			"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name = '" +
-			req.body.device_name +
+			"UPDATE device SET shift_machine = 2 WHERE device_name = '" +
+			activate_escapemachine[0] +
+			"' OR device_name = '" +
+			activate_escapemachine[1] +
 			"'";
+		console.log("탈출장치 활성화");
+		console.log(sql_update);
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
