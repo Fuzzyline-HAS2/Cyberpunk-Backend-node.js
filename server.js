@@ -1909,6 +1909,7 @@ app.post("/api/update/iotglove", (req, res) => {
 				res.send(sql_reset + " query is not excuted. select fail...\n" + err);
 		});
 	} else if (req.body.command === "tagger_blink") {
+		console.log("tagger_blink");
 		let group;
 		sql_update =
 			"SELECT device_name FROM device where theme = '" +
@@ -1930,14 +1931,15 @@ app.post("/api/update/iotglove", (req, res) => {
 						sql_update + " query is not excuted. select fail...\n" + err
 					);
 			});
-		});
-		sql_reset =
-			"UPDATE device SET shift_machine = 2 WHERE device_name like '" +
-			group +
-			"%'";
-		connection.query(sql_reset, (err, rows) => {
-			if (err)
-				res.send(sql_reset + " query is not excuted. select fail...\n" + err);
+			sql_reset =
+				"UPDATE device SET shift_machine = 2 WHERE device_name like '" +
+				group +
+				"%'";
+			console.log(sql_reset);
+			connection.query(sql_reset, (err, rows) => {
+				if (err)
+					res.send(sql_reset + " query is not excuted. select fail...\n" + err);
+			});
 		});
 	}
 	res.end();
