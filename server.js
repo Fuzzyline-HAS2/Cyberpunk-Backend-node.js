@@ -570,6 +570,31 @@ app.post("/api/update/dropdown", (req, res) => {
 		}
 	} else if (req.body.command.includes("device_state")) {
 		switch (req.body.command.slice(13)) {
+			case "watchdog":
+				if (req.body.device_name === "ALL") {
+					sql_update =
+						"UPDATE device set watchdog = 1 where device_type = '" +
+						req.body.device_type +
+						"'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				} else {
+					sql_update =
+						"UPDATE device set watchdog = 1 where device_name = '" +
+						req.body.device_name +
+						"'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				}
+				break;
 			case "check":
 				if (req.body.device_name === "ALL") {
 					sql_update =
