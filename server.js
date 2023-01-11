@@ -1,4 +1,5 @@
 //server.js
+//프록시: 모든 요청은 /api로 시작
 const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
@@ -570,6 +571,37 @@ app.post("/api/update/dropdown", (req, res) => {
 		}
 	} else if (req.body.command.includes("device_state")) {
 		switch (req.body.command.slice(13)) {
+			case "ready_activate":
+				if (req.body.device_name === "ALL") {
+					sql_update =
+						"UPDATE " +
+						req.body.theme +
+						"_" +
+						req.body.device_type +
+						" set device_state = 'ready_activate'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				} else {
+					sql_update =
+						"UPDATE " +
+						req.body.theme +
+						"_" +
+						req.body.device_type +
+						" set device_state = 'ready_activate' where device_name = '" +
+						req.body.device_name +
+						"'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				}
+				break;
 			case "watchdog":
 				if (req.body.device_name === "ALL") {
 					sql_update =
