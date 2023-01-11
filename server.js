@@ -1796,6 +1796,16 @@ app.post("/api/update/iotglove", (req, res) => {
 				});
 			}
 		}
+	} else if (req.body.command === "watchdog") {
+		sql_update =
+			"UPDATE device SET watchdog = 1,shift_machine=shift_machine+1 WHERE device_name like '" +
+			req.body.group +
+			"%'";
+		console.log(sql_update);
+		connection.query(sql_update, (err, rows) => {
+			if (err)
+				res.send(sql_update + " query is not excuted. select fail...\n" + err);
+		});
 	} else if (req.body.command === "photo_state") {
 		console.log(req.body);
 		if (
