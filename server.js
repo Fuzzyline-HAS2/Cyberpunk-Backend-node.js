@@ -1561,56 +1561,25 @@ app.post("/api/update/device", (req, res) => {
 app.post("/api/update/selfrevive", (req, res) => {
 	let sql_update;
 	cyberpunk_refresh_request = true;
-	console.log(req.body);
-	if (req.body.command === "self_revive_start") {
-		sql_update =
-			"UPDATE " +
-			req.body.theme +
-			"_" +
-			req.body.device_type +
-			" SET game_state= 'activate', device_state= 'activate' WHERE device_state not in('used')";
-		console.log(sql_update);
-		connection.query(sql_update, (err, rows) => {
-			if (err)
-				res.send(sql_update + " query is not excuted. select fail...\n" + err);
-		});
-	} else if (req.body.command === "self_revive_end") {
-		sql_update =
-			"UPDATE " +
-			req.body.theme +
-			"_" +
-			req.body.device_type +
-			" SET game_state= 'ready', device_state= 'ready' WHERE device_state not in('used')";
-		console.log(sql_update);
-		connection.query(sql_update, (err, rows) => {
-			if (err)
-				res.send(sql_update + " query is not excuted. select fail...\n" + err);
-		});
-		req.body.device_name.forEach((el) => {
-			sql_update =
-				"UPDATE " +
-				req.body.theme +
-				"_" +
-				req.body.device_type +
-				" SET game_state= 'activate', device_state= 'activate' WHERE device_state not in('used') and device_name = '" +
-				el +
-				"'";
-			console.log(sql_update);
-			connection.query(sql_update, (err, rows) => {
-				if (err)
-					res.send(
-						sql_update + " query is not excuted. select fail...\n" + err
-					);
-			});
-		});
-	}
 	sql_update =
-		"UPDATE device SET shift_machine = shift_machine+2 WHERE device_type = 'revivalmachine'";
+		"UPDATE " +
+		req.body.device +
+		"_" +
+		req.body.group +
+		" SET life_chip= life_chip+1 WHERE role not in('tagger')";
+	console.log(sql_update);
 	connection.query(sql_update, (err, rows) => {
 		if (err)
 			res.send(sql_update + " query is not excuted. select fail...\n" + err);
 	});
-	res.end();
+	sql_update =
+		"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name like '" +
+		req.body.group +
+		"%'";
+	connection.query(sql_update, (err, rows) => {
+		if (err)
+			res.send(sql_update + " query is not excuted. select fail...\n" + err);
+	});
 });
 app.post("/api/narration", (req, res) => {
 	let sql_narration;
