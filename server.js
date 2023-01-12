@@ -286,13 +286,13 @@ app.post("/api/update", (req, res) => {
 		sql_update =
 			"UPDATE device set shift_machine = 2 where theme = '" +
 			req.body.theme +
-			"' and device_type not in('iotglove')";
+			"' and device_type not in('iotglove,cyberpunkOS')";
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
 	} else if (req.body.device === "game_start") {
-		console.log("req.body.device === 'game_start' 대체 어디서 쓰는거야;;;;");
+		// console.log("req.body.device === 'game_start' 어디서 쓰는거지");
 		for (let i = 0; i < device_list.length; i++) {
 			if (device_list !== "revivalmachine" || device_list !== "escapemachine") {
 				sql_update =
@@ -1558,29 +1558,6 @@ app.post("/api/update/device", (req, res) => {
 	}
 	res.end();
 });
-app.post("/api/update/selfrevive", (req, res) => {
-	let sql_update;
-	cyberpunk_refresh_request = true;
-	sql_update =
-		"UPDATE " +
-		req.body.device +
-		"_" +
-		req.body.group +
-		" SET life_chip= life_chip+1 WHERE role not in('tagger')";
-	console.log(sql_update);
-	connection.query(sql_update, (err, rows) => {
-		if (err)
-			res.send(sql_update + " query is not excuted. select fail...\n" + err);
-	});
-	sql_update =
-		"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name like '" +
-		req.body.group +
-		"%'";
-	connection.query(sql_update, (err, rows) => {
-		if (err)
-			res.send(sql_update + " query is not excuted. select fail...\n" + err);
-	});
-});
 app.post("/api/narration", (req, res) => {
 	let sql_narration;
 	console.log(req.body);
@@ -1979,6 +1956,29 @@ app.post("/api/update/iotglove", (req, res) => {
 		});
 	}
 	res.end();
+});
+app.post("/api/selfrevive/iotglove", (req, res) => {
+	let sql_update;
+	iotglove_refresh_request = true;
+	sql_update =
+		"UPDATE " +
+		req.body.device +
+		"_" +
+		req.body.group +
+		" SET life_chip= life_chip+1 WHERE role not in('tagger')";
+	console.log(sql_update);
+	connection.query(sql_update, (err, rows) => {
+		if (err)
+			res.send(sql_update + " query is not excuted. select fail...\n" + err);
+	});
+	sql_update =
+		"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name like '" +
+		req.body.group +
+		"%'";
+	connection.query(sql_update, (err, rows) => {
+		if (err)
+			res.send(sql_update + " query is not excuted. select fail...\n" + err);
+	});
 });
 app.post("/api/reset/iotglove", (req, res) => {
 	let sql_reset;
