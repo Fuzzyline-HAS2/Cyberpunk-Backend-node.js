@@ -178,7 +178,7 @@ app.post("/api/reset", (req, res) => {
 		sql_reset =
 			"UPDATE device set shift_machine = 2 where theme = '" +
 			req.body.theme +
-			"' and device_type not in('iotglove')";
+			"' and device_type not in('iotglove','mp3')";
 		connection.query(sql_reset, (err, rows) => {
 			if (err)
 				res.send(sql_reset + " query is not excuted. select fail...\n" + err);
@@ -237,6 +237,7 @@ app.post("/api/update", (req, res) => {
 	let sql_update;
 	cyberpunk_refresh_request = true;
 	if (req.body.device === "all_except_iot") {
+		//iotglove 제외한 전체장치 state 변경
 		if (req.body.state === "S") {
 			for (let i = 0; i < device_list.length; i++) {
 				sql_update =
@@ -286,13 +287,13 @@ app.post("/api/update", (req, res) => {
 		sql_update =
 			"UPDATE device set shift_machine = 2 where theme = '" +
 			req.body.theme +
-			"' and device_type not in('iotglove,cyberpunkOS')";
+			"' and device_type not in('iotglove','mp3')";
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
 	} else if (req.body.device === "game_start") {
-		// console.log("req.body.device === 'game_start' 어디서 쓰는거지");
+		// console.log("req.body.device === 'game_start' 어디서");
 		for (let i = 0; i < device_list.length; i++) {
 			if (device_list !== "revivalmachine" || device_list !== "escapemachine") {
 				sql_update =
@@ -312,12 +313,13 @@ app.post("/api/update", (req, res) => {
 		sql_update =
 			"UPDATE device set shift_machine = 2 where theme = '" +
 			req.body.theme +
-			"' and device_type not in('escapemachine,revivalmachine')";
+			"' and device_type not in('escapemachine','revivalmachine','mp3')";
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
 	} else {
+		//장치별로 state변경할 때
 		if (req.body.state === "S") {
 			sql_update =
 				"UPDATE " +
@@ -363,7 +365,7 @@ app.post("/api/update", (req, res) => {
 			req.body.theme +
 			"' and device_type = '" +
 			req.body.device +
-			"'";
+			"' and device_type not in('mp3')";
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
@@ -1271,7 +1273,7 @@ app.post("/api/update/dropdown", (req, res) => {
 		sql_update =
 			"UPDATE device set shift_machine = 2 where device_type = '" +
 			req.body.device_type +
-			"'";
+			"' and device_type not in('mp3')";
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
@@ -1280,7 +1282,7 @@ app.post("/api/update/dropdown", (req, res) => {
 		sql_update =
 			"UPDATE device set shift_machine = 2 where device_name = '" +
 			req.body.device_name +
-			"'";
+			"' and device_type not in('mp3')";
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
@@ -2055,7 +2057,7 @@ app.post("/api/update/all", (req, res) => {
 		sql_reset =
 			"UPDATE device set shift_machine = 2 where theme = '" +
 			req.body.theme +
-			"'";
+			"' and device_type not in('mp3')";
 		connection.query(sql_reset, (err, rows) => {
 			if (err)
 				res.send(sql_reset + " query is not excuted. select fail...\n" + err);
