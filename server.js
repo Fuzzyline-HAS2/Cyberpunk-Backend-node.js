@@ -191,7 +191,7 @@ app.post("/api/reset", (req, res) => {
 			// console.log(rows)
 		});
 		sql_reset =
-			"UPDATE device set watchdog = '1' where device_name = 'cyberpunkOS'";
+			"UPDATE device set watchdog = '1', shift_machine = '0' where device_name = 'cyberpunkOS'";
 		connection.query(sql_reset, (err, rows) => {
 			if (err)
 				res.send(sql_reset + " query is not excuted. select fail...\n" + err);
@@ -932,7 +932,7 @@ app.post("/api/update/dropdown", (req, res) => {
 					req.body.theme +
 					"_" +
 					req.body.device_type +
-					" set taken_chip = taken_chip+1";
+					" set taken_chip = taken_chip+1 where device_name = 'BT'";
 				connection.query(sql_update, (err, rows) => {
 					if (err)
 						res.send(
@@ -946,7 +946,7 @@ app.post("/api/update/dropdown", (req, res) => {
 					req.body.theme +
 					"_" +
 					req.body.device_type +
-					" set taken_chip = taken_chip-1";
+					" set taken_chip = taken_chip-1 where device_name = 'BT'";
 				connection.query(sql_update, (err, rows) => {
 					if (err)
 						res.send(
@@ -960,7 +960,7 @@ app.post("/api/update/dropdown", (req, res) => {
 					req.body.theme +
 					"_" +
 					req.body.device_type +
-					" set taken_chip = 10, device_state = 'takenchip_max'";
+					" set taken_chip = 10, device_state = 'takenchip_max' where device_name = 'BT'";
 				connection.query(sql_update, (err, rows) => {
 					if (err)
 						res.send(
@@ -974,13 +974,163 @@ app.post("/api/update/dropdown", (req, res) => {
 					req.body.theme +
 					"_" +
 					req.body.device_type +
-					" set game_state = 'activate', device_state = 'blink'";
+					" set game_state = 'activate', device_state = 'blink' where device_name = 'BT'";
 				connection.query(sql_update, (err, rows) => {
 					if (err)
 						res.send(
 							sql_update + " query is not excuted. select fail...\n" + err
 						);
 				});
+				break;
+			case "stage1":
+				sql_update =
+					"UPDATE " +
+					req.body.theme +
+					"_" +
+					req.body.device_type +
+					" set game_state = 'activate', device_state = 'stage1' where device_name = 'HT'";
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(
+							sql_update + " query is not excuted. select fail...\n" + err
+						);
+				});
+				break;
+			case "stage2":
+				sql_update =
+					"UPDATE " +
+					req.body.theme +
+					"_" +
+					req.body.device_type +
+					" set game_state = 'activate', device_state = 'stage2' where device_name = 'HT'";
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(
+							sql_update + " query is not excuted. select fail...\n" + err
+						);
+				});
+				break;
+			case "stage3":
+				sql_update =
+					"UPDATE " +
+					req.body.theme +
+					"_" +
+					req.body.device_type +
+					" set game_state = 'activate', device_state = 'stage3' where device_name = 'HT'";
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(
+							sql_update + " query is not excuted. select fail...\n" + err
+						);
+				});
+				break;
+			case "rescue":
+				sql_update =
+					"UPDATE " +
+					req.body.theme +
+					"_" +
+					req.body.device_type +
+					" set game_state = 'activate', device_state = 'rescue' where device_name = 'HT'";
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(
+							sql_update + " query is not excuted. select fail...\n" + err
+						);
+				});
+				break;
+			case "cool_res":
+				sql_update =
+					"UPDATE " +
+					req.body.theme +
+					"_" +
+					req.body.device_type +
+					" set game_state = 'activate', device_state = 'cool_res' where device_name = 'HT'";
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(
+							sql_update + " query is not excuted. select fail...\n" + err
+						);
+				});
+				break;
+			case "cool_die":
+				sql_update =
+					"UPDATE " +
+					req.body.theme +
+					"_" +
+					req.body.device_type +
+					" set game_state = 'activate', device_state = 'cool_die' where device_name = 'HT'";
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(
+							sql_update + " query is not excuted. select fail...\n" + err
+						);
+				});
+				break;
+			
+			case "debuff":
+				// sql_update = "UPDATE has2.cyberpunk_tagmachine set game_state = 'activate', device_state = 'debuff`"
+				if (req.body.device_name === "ALL") {
+					sql_update =
+						"UPDATE " +
+						req.body.theme +
+						"_" +
+						req.body.device_type +
+						" SET game_state = 'activate', device_state = 'debuff'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				}
+				else{
+					sql_update =
+						"UPDATE " +
+						req.body.theme +
+						"_" +
+						req.body.device_type +
+						" SET game_state = 'activate', device_state = 'debuff' where device_name = '" +
+						req.body.device_name +
+						"'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				}
+				
+				break;
+			case "update":
+				if (req.body.device_name === "ALL") {
+					sql_update =
+						"UPDATE " +
+						req.body.theme +
+						"_" +
+						req.body.device_type +
+						" set device_state = 'update'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				} else {
+					sql_update =
+						"UPDATE " +
+						req.body.theme +
+						"_" +
+						req.body.device_type +
+						" set device_state = 'update' where device_name = '" +
+						req.body.device_name +
+						"'";
+					connection.query(sql_update, (err, rows) => {
+						if (err)
+							res.send(
+								sql_update + " query is not excuted. select fail...\n" + err
+							);
+					});
+				}
 				break;
 		}
 	} else if (req.body.command.includes("manage_state")) {
@@ -1432,7 +1582,8 @@ app.post("/api/update/device", (req, res) => {
 	if (
 		req.body.device_type !== "revivalmachine" &&
 		req.body.device_type !== "escapemachine" &&
-		req.body.device_type !== "temple"
+		req.body.device_type !== "temple" &&
+		req.body.device_type !== "chair"
 	) {
 		sql_update =
 			"UPDATE " +
@@ -1489,16 +1640,33 @@ app.post("/api/update/device", (req, res) => {
 			req.body.device_type +
 			" SET game_state= '" +
 			req.body.device_state +
-			"', device_state= 'blink' ";
+			"', device_state= 'blink' where device_name = 'BT'";
 		console.log(sql_update);
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
 		});
 		sql_update =
-			"UPDATE device SET shift_machine = shift_machine+1 WHERE device_type = '" +
-			req.body.device_type +
-			"'";
+			"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name = 'BT'";
+		connection.query(sql_update, (err, rows) => {
+			if (err)
+				res.send(sql_update + " query is not excuted. select fail...\n" + err);
+		});
+	}
+	else if (req.body.device_type === "chair") {
+		sql_update =
+			"UPDATE " +
+			req.body.theme +
+			"_temple SET game_state= '" +
+			req.body.device_state +
+			"', device_state= 'activate' where device_name = 'HT'";
+		console.log(sql_update);
+		connection.query(sql_update, (err, rows) => {
+			if (err)
+				res.send(sql_update + " query is not excuted. select fail...\n" + err);
+		});
+		sql_update =
+			"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name = 'HT'";
 		connection.query(sql_update, (err, rows) => {
 			if (err)
 				res.send(sql_update + " query is not excuted. select fail...\n" + err);
@@ -1508,7 +1676,7 @@ app.post("/api/update/device", (req, res) => {
 	else if (req.body.device_type === "escapemachine") {
 		let max = 3;
 		let min = 0;
-		let escapemachine = ["BE", "OE", "FE"];
+		let escapemachine = ["HE", "OE", "FE"];
 		let activate_escapemachine = [];
 
 		while (1) {
@@ -1590,6 +1758,12 @@ app.post("/api/narration", (req, res) => {
 							sql_update + " query is not excuted. select fail...\n" + err
 						);
 				});
+				sql_update =
+				"UPDATE `has2`.`device` SET `shift_machine` = '1' WHERE (`device_type` = 'generator')"
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(sql_update + " query is not excuted. select fail...\n" + err);
+				});
 				//탈출장치 활성화될때 아이템박스에도 발전기가 수리되었음을 device_state로 전송
 				sql_update =
 					"UPDATE " +
@@ -1601,18 +1775,24 @@ app.post("/api/narration", (req, res) => {
 							sql_update + " query is not excuted. select fail...\n" + err
 						);
 				});
-				break;
+				sql_update =
+				"UPDATE `has2`.`device` SET `shift_machine` = '1' WHERE (`device_type` = 'itembox')"
+				connection.query(sql_update, (err, rows) => {
+					if (err)
+						res.send(sql_update + " query is not excuted. select fail...\n" + err);
+				});
+			break;
 		}
 	}
 
-	sql_narration =
-		"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name = '" +
-		req.body.theme +
-		"OS'";
-	connection.query(sql_narration, (err, rows) => {
-		if (err)
-			res.send(sql_narration + " query is not excuted. select fail...\n" + err);
-	});
+	// sql_narration =
+	// 	"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name = '" +
+	// 	req.body.theme +
+	// 	"OS'";
+	// connection.query(sql_narration, (err, rows) => {
+	// 	if (err)
+	// 		res.send(sql_narration + " query is not excuted. select fail...\n" + err);
+	// });
 	res.end();
 });
 
@@ -1968,17 +2148,25 @@ app.post("/api/selfrevive/iotglove", (req, res) => {
 		" SET life_chip= life_chip+1 WHERE role not in('tagger')";
 	console.log(sql_update);
 	connection.query(sql_update, (err, rows) => {
-		if (err)
-			res.send(sql_update + " query is not excuted. select fail...\n" + err);
-	});
+        if (err){
+            res.send(sql_update + " query is not excuted. select fail...\n" + err);
+        }
+        else{
+            res.end();
+        }
+    });
 	sql_update =
 		"UPDATE device SET shift_machine = shift_machine+1 WHERE device_name like '" +
 		req.body.group +
 		"%'";
 	connection.query(sql_update, (err, rows) => {
-		if (err)
-			res.send(sql_update + " query is not excuted. select fail...\n" + err);
-	});
+        if (err){
+            res.send(sql_update + " query is not excuted. select fail...\n" + err);
+        }
+        else{
+            res.end();
+        }
+    });
 });
 app.post("/api/reset/iotglove", (req, res) => {
 	let sql_reset;
@@ -2061,5 +2249,18 @@ app.post("/api/update/all", (req, res) => {
 				res.send(sql_reset + " query is not excuted. select fail...\n" + err);
 		});
 	}
+	res.end();
+});
+
+app.post("/api/update/selected_language", (req, res) => {
+	let sql_update;
+	console.log(req.body.lang);
+
+	sql_update = `UPDATE has2.device SET selected_language = '${req.body.lang}';`;
+	connection.query(sql_update, (err, rows) => {
+		if (err)
+			res.send(sql_update + " query is not excuted. select fail...\n" + err);
+	});
+	res.end();
 });
 app.listen(port, () => console.log(`Listening on port ${port}`));
